@@ -26,7 +26,7 @@ html = """
             <ul id='messages'>
             </ul>
             <script>
-            var ws = null;
+                var ws = null;
                 function connect(event) {
                     var itemId = document.getElementById("itemId")
                     var token = document.getElementById("token")
