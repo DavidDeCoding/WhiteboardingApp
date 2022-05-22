@@ -9,6 +9,7 @@ python = "^3.8"
 fastapi = "^0.76.0"
 uvicorn = "^0.17.6"
 websockets = "^10.3"
+strawberry-graphql = {extras = ["fastapi"], version = "^0.111.1"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

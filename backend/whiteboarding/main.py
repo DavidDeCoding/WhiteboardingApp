@@ -1,9 +1,10 @@
 from typing import Optional, List
 
+import strawberry
+
 from fastapi import Cookie, Depends, FastAPI, Query, WebSocket, status, WebSocketDisconnect
 from fastapi.responses import HTMLResponse
-
-app = FastAPI()
+from strawberry.fastapi import GraphQLRouter
 
 html = """
     <!DOCTYPE html>
@@ -73,6 +74,22 @@ class ConnectionManager:
 
 
 manager = ConnectionManager()
+
+
+@strawberry.type
+class Query:
+    @strawberry.field
+    def hello(self) -> str:
+        return "Hello World"
+
+
+schema = strawberry.Schema(Query)
+
+graphql_app = GraphQLRouter(schema)
+
+app = FastAPI()
+app.add_route("/graphql", graphql_app)
+app.add_websocket_route("/graphql", graphql_app)
 
 
 @app.get("/")
