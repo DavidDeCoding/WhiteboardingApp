@@ -1,0 +1,100 @@
+service: coupon-reminders
+
+package:
+  individually: true
+
+provider:
+  name: aws
+  runtime: python3.8
+  region: us-west-1
+  stage: ${opt:stage, "dev"}
+  lambdaHashingVersion: "20201221"
+  websocketsApiName: whiteboarding-backend-apis
+  websocketsApiRouteSelectionExpression: $request.body.action
+  websocketsDescription: All Apis for the backend of whiteboarding app
+
+functions:
+  connectionHandler:
+    package:
+      include:
+        - "whiteboarding"
+      exclude:
+        - "requirements.txt"
+        - "package.json"
+        - "package-lock.json"
+        - ".serverless/**"
+        - ".virtualenv/**"
+        - "node_modules/**"
+        - ".pytest_cache"
+        - "tests/**"
+        - ".gitignore"
+        - "poetry.lock"
+        - "pyproject.toml"
+        - "README.md"
+        - "dist/**"
+    handler: whiteboarding.connection.handler
+    environment:
+      STAGE: ${self:provider.stage}
+    events:
+      - websocket:
+          route: $connect
+      - websocket:
+          route: $disconnect
+
+  defaultHandler:
+    package:
+      include:
+        - "whiteboarding"
+      exclude:
+        - "requirements.txt"
+        - "package.json"
+        - "package-lock.json"
+        - ".serverless/**"
+        - ".virtualenv/**"
+        - "node_modules/**"
+        - ".pytest_cache"
+        - "tests/**"
+        - ".gitignore"
+        - "poetry.lock"
+        - "pyproject.toml"
+        - "README.md"
+        - "dist/**"
+    handler: whiteboarding.default.handler
+    environment:
+      STAGE: ${self:provider.stage}
+    events:
+      - websocket:
+          route: $default
+
+  onMessageHandler:
+    package:
+      include:
+        - "whiteboarding"
+      exclude:
+        - "requirements.txt"
+        - "package.json"
+        - "package-lock.json"
+        - ".serverless/**"
+        - ".virtualenv/**"
+        - "node_modules/**"
+        - ".pytest_cache"
+        - "tests/**"
+        - ".gitignore"
+        - "poetry.lock"
+        - "pyproject.toml"
+        - "README.md"
+        - "dist/**"
+    handler: whiteboarding.on_message.handler
+    environment:
+      STAGE: ${self:provider.stage}
+    events:
+      - websocket:
+          route: onMessage
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    dockerizePip: true
+    dockerFile: Dockerfile
