@@ -1,4 +1,4 @@
-service: coupon-reminders
+service: whiteboarding
 
 package:
   individually: true
@@ -12,6 +12,23 @@ provider:
   websocketsApiName: whiteboarding-backend-apis
   websocketsApiRouteSelectionExpression: $request.body.action
   websocketsDescription: All Apis for the backend of whiteboarding app
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:DescribeStream
+        - dynamodb:GetRecords
+        - dynamodb:GetShardIterator
+        - dynamodb:ListStreams
+      Resource:
+        - { "Fn::GetAtt": ["WhiteboardingDynamoDBTable", "Arn"] }
+  environment:
+    WHITEBOARDING_TABLE: ${self:custom.whiteboardingTableName}
 
 functions:
   connectionHandler:
@@ -98,3 +115,22 @@ custom:
   pythonRequirements:
     dockerizePip: true
     dockerFile: Dockerfile
+  whiteboardingTableName: 'whiteboarding-table-${self:provider:stage}'
+
+resources:
+  Resources:
+    WhiteboardingDynamoDBTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: whiteboardId
+            AttributeType: S
+          - AttributeName: users
+            AttributeType: SS
+        KeySchema:
+          - AttributeName: whiteboardId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.whiteboardingTableName}
