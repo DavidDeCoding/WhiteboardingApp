@@ -115,7 +115,7 @@ custom:
   pythonRequirements:
     dockerizePip: true
     dockerFile: Dockerfile
-  whiteboardingTableName: 'whiteboarding-table-${self:provider:stage}'
+  whiteboardingTableName: 'whiteboarding-table-${self:provider.stage}'
 
 resources:
   Resources:
@@ -125,8 +125,6 @@ resources:
         AttributeDefinitions:
           - AttributeName: whiteboardId
             AttributeType: S
-          - AttributeName: users
-            AttributeType: SS
         KeySchema:
           - AttributeName: whiteboardId
             KeyType: HASH
