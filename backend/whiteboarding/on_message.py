@@ -1,4 +1,10 @@
 import boto3
+import os
+import json
+
+WHITEBOARDING_TABLE = os.environ['WHITEBOARDING_TABLE']
+
+db_client = boto3.client('dynamodb')
 
 
 def handler(event, context):
@@ -10,8 +16,11 @@ def handler(event, context):
     client = boto3.client('apigatewaymanagementapi', endpoint_url=endpoint_url)
 
     connection_id = event["requestContext"]["connectionId"]
+    body = json.loads(event["body"])
+
     client.post_to_connection(
         ConnectionId=connection_id,
-        Data="Hello"
+        Data=body["message"]
     )
+
     return {"statusCode": 200}
