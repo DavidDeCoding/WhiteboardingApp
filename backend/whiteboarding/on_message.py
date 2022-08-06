@@ -18,9 +18,18 @@ def handler(event, context):
     connection_id = event["requestContext"]["connectionId"]
     body = json.loads(event["body"])
 
-    client.post_to_connection(
-        ConnectionId=connection_id,
-        Data=body["message"]
+    response = table.get_item(
+        Key={'whiteboardId': "123"}
     )
+    print(response)
+
+    if "Item" in response:
+        for user in response['Item']['users']:
+            if user == connection_id:
+                continue
+            client.post_to_connection(
+                ConnectionId=user,
+                Data=body["message"]
+            )
 
     return {"statusCode": 200}

@@ -23,7 +23,6 @@ def handler(event, context):
             table.put_item(
                 Item={
                     'whiteboardId': "123",
-                    'data': 'Dummy Data',
                     'users': [event['requestContext']['connectionId']]
                 }
             )
