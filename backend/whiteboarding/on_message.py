@@ -3,8 +3,8 @@ import os
 import json
 
 WHITEBOARDING_TABLE = os.environ['WHITEBOARDING_TABLE']
-
-db_client = boto3.client('dynamodb')
+db_client = boto3.resource('dynamodb')
+table = db_client.Table(WHITEBOARDING_TABLE)
 
 
 def handler(event, context):
