@@ -23,13 +23,29 @@ def handler(event, context):
     )
     print(response)
 
+    connections = []
     if "Item" in response:
         for user in response['Item']['users']:
             if user == connection_id:
+                connections.append(user)
                 continue
-            client.post_to_connection(
-                ConnectionId=user,
-                Data=body["message"]
-            )
+
+            try:
+                client.post_to_connection(
+                    ConnectionId=user,
+                    Data=body["message"]
+                )
+                connections.append(user)
+            except:
+                print(f"user update failed: {user}")
+
+    table.update_item(
+        Key={'whiteboardId': "123"},
+        ExpressionAttributeNames={'#users': 'users'},
+        ExpressionAttributeValues={
+            ':users': connections
+        },
+        UpdateExpression="SET #users = :users"
+    )
 
     return {"statusCode": 200}
