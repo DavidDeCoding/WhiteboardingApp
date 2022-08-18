@@ -12,6 +12,8 @@ This app allows customers to:
 1. To start a Whiteboarding session.
 2. Other customers can then join the whiteboarding session and collaborate together.
 
+![alt text](https://github.com/DavidDeCoding/WhiteboardingApp/blob/main/whiteboardingDemo.gif?raw=true)
+
 ## Usage
 
 ### Backend
